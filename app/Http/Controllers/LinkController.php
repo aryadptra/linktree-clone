@@ -40,13 +40,22 @@ class LinkController extends Controller
             'title.max' => 'The title may not be greater than 15 characters.', // Pesan khusus untuk aturan max pada title
         ]);
 
-
         $user_id = auth()->user()->id;
+
+        // Get all links of users has
+        $links = Link::query()->where('user_id', $user_id)->get();
+        $order = 0;
+
+        // Check if user has link or no
+        if (count($links) > 0) {
+            $order = $links->max('order') + 1;
+        }
 
         $link = Link::create([
             'title' => $request->title,
             'url' => $request->url,
-            'user_id' => $user_id
+            'user_id' => $user_id,
+            'order' => $order
         ]);
 
         return to_route('links.index')->with('success', 'Link created successfully!');
