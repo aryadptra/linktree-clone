@@ -6,9 +6,7 @@ import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
 import Input from '@/Components/InputText';
 import Textarea from '@/Components/Textarea';
 import InputError from '@/Components/InputError';
-import { FaEye, FaEdit, FaTrash } from 'react-icons/fa';
-import { RiPencilLine, RiEyeLine } from 'react-icons/ri';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import { RiPencilLine, RiEyeLine, RiDeleteBinLine } from 'react-icons/ri';
 
 const Index = ({ links }) => {
     const { auth } = usePage().props
@@ -84,6 +82,19 @@ const Index = ({ links }) => {
         });
     }
 
+    // Delete link
+    const handleDelete = (link) => {
+        // Gunakan yes/no
+        if (confirm(`Apakah Anda yakin ingin menghapus link?`)) {
+            router.delete(route('links.destroy', link), {
+                preserveScroll: true,
+                onSuccess: () => {
+                    router.reload();
+                }
+            });
+        }
+    }
+
     // Link list
     const [linkList, setLinkList] = useState(links.data);
 
@@ -105,26 +116,6 @@ const Index = ({ links }) => {
         e.preventDefault();
         setDroppedOverIndex(index);
     };
-
-
-    // const handleDragEnd = () => {
-    //     if (draggedItemIndex === null || droppedOverIndex === null) return;
-
-    //     const draggedIndex = parseInt(draggedItemIndex);
-    //     const droppedIndex = parseInt(droppedOverIndex);
-    //     if (draggedIndex === droppedIndex) return;
-
-    //     const newLinks = [...linkList];
-    //     const draggedLink = newLinks[draggedIndex];
-    //     newLinks.splice(draggedIndex, 1);
-    //     newLinks.splice(droppedIndex, 0, draggedLink);
-
-    //     setLinkList(newLinks);
-
-    //     // Reset draggedItemIndex and droppedOverIndex
-    //     setDraggedItemIndex(null);
-    //     setDroppedOverIndex(null);
-    // };
 
     const handleDragEnd = () => {
         if (draggedItemIndex === null || droppedOverIndex === null) return;
@@ -259,8 +250,10 @@ const Index = ({ links }) => {
                                                 <RiEyeLine className="w-6 h-6" />
                                             </button> */}
                                                 <button onClick={() => handleEdit(link, link.id)} className="text-gray-500 hover:text-gray-700 focus:outline-none">
-
                                                     <RiPencilLine className="w-6 h-6" />
+                                                </button>
+                                                <button onClick={() => handleDelete(link.id)} className="text-gray-500 hover:text-gray-700 focus:outline-none">
+                                                    <RiDeleteBinLine className="w-6 h-6" />
                                                 </button>
                                             </div>
                                         </div>

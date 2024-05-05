@@ -100,6 +100,8 @@ class LinkController extends Controller
      */
     public function destroy(Link $link)
     {
-        //
+        $link->delete();
+
+        return to_route('links.index')->with('success', 'Link deleted successfully!');
     }
 }
