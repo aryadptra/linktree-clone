@@ -134,8 +134,7 @@ const Index = ({ links }) => {
 
         // Perbarui state dengan urutan yang baru
         // setLinkList(newLinks);
-        // console.log(newLinks);
-        saveUpdatedLinksToDatabase(newLinks);
+        saveUpdatedLinksToDatabase([newLinks[draggedIndex], newLinks[droppedIndex]]);
 
         // Reset draggedItemIndex and droppedOverIndex
         setDraggedItemIndex(null);
@@ -172,7 +171,7 @@ const Index = ({ links }) => {
                         <MocukupMobile links={links} />
                     </div>
                     <div className="col-span-12 md:col-span-8">
-                        <div className="rounded-lg py-3 px-5 bg-blue-500 text-white text-lg">🔥 Your Linktree is live: <span className="font-semibold">https://aryadwiputra.com/{auth.user.username}</span>
+                        <div className="rounded-lg py-3 px-5 bg-blue-500 text-white text-lg">🔥 Your Linktree is live: <span className="font-semibold">https://aryadwiputra.com/profile/{auth.user.username}</span>
                         </div>
 
                         <Transition

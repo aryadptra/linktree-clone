@@ -44,11 +44,8 @@ export default function NavigationBar() {
                                                 >
                                                     Dashboard
                                                 </DropdownMenu.Link>
-                                                <DropdownMenu.Link href={'#'}>
-                                                    My profile
-                                                </DropdownMenu.Link>
-                                                <DropdownMenu.Link href={'#'}>
-                                                    Settings
+                                                <DropdownMenu.Link href={route('links.index')}>
+                                                    My Links
                                                 </DropdownMenu.Link>
                                                 {/* <DropdownMenu.Link href={'#'}>
                                                     My articles

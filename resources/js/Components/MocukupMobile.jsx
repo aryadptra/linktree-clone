@@ -15,7 +15,7 @@ export default function MockupMobile({ links }) {
             <div className="h-[46px] w-[3px] bg-gray-800 dark:bg-gray-800 absolute -start-[17px] top-[124px] rounded-s-lg"></div>
             <div className="h-[46px] w-[3px] bg-gray-800 dark:bg-gray-800 absolute -start-[17px] top-[178px] rounded-s-lg"></div>
             <div className="h-[64px] w-[3px] bg-gray-800 dark:bg-gray-800 absolute -end-[17px] top-[142px] rounded-e-lg"></div>
-            <div className="rounded-[2rem] overflow-hidden w-[272px] h-[572px] bg-white dark:bg-gray-800 flex flex-col justify-center items-center">
+            <div className="rounded-[2rem] overflow-hidden w-[272px] h-[572px] dark:bg-slate-800 flex flex-col justify-center items-center">
                 {auth.user && (
                     <div className="flex flex-col items-center justify-center mb-4">
                         <div className="bg-gray-200 dark:bg-gray-700 rounded-full w-12 h-12 flex items-center justify-center text-gray-800 dark:text-white text-xl font-bold mb-2">
@@ -25,9 +25,9 @@ export default function MockupMobile({ links }) {
                     </div>
                 )}
                 {links.data.map((link, index) => (
-                    <Link key={index} href={link.url} className="text-gray-800 bg-blue-600 w-full text-center rounded-md dark:text-white text-lg font-semibold my-1">
+                    <a target="_blank" key={index} href={link.url} className="text-gray-800 bg-blue-600 w-full text-center rounded-md dark:text-white text-lg font-semibold my-1">
                         {link.title}
-                    </Link>
+                    </a>
                 ))}
             </div>
         </div>

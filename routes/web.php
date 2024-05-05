@@ -21,7 +21,9 @@ Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::middleware('auth')->group(function () {
+Route::get("/profile/{user:username}", [ProfileController::class, 'show'])->name('profile.show');
+
+Route::middleware('auth')->prefix('admin')->group(function () {
     Route::resource('links', LinkController::class);
     Route::put('links/{link}/update-status', LinkStatusController::class)->name('links.update-status');
     Route::put('links/{link}/update-order', LinkOrderController::class)->name('links.update-order');

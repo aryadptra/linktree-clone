@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Http\Resources\ProfileSingleResource;
+use App\Models\User;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -13,6 +15,23 @@ use Inertia\Response;
 
 class ProfileController extends Controller
 {
+    public function show(User $user)
+    {
+        if (!$user->username) {
+            abort(404);
+        }
+
+        if ($user->username == 'administrator' || $user->username == 'admin') {
+            abort(404);
+        }
+
+        $user = User::where('username', $user->username)->with(['links'])->first();
+
+        return Inertia::render("Profile/Show", [
+            'user' => $user,
+        ]);
+    }
+
     /**
      * Display the user's profile form.
      */
