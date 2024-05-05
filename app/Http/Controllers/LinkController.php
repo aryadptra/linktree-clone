@@ -14,7 +14,7 @@ class LinkController extends Controller
      */
     public function index()
     {
-        $links = Link::query()->where('user_id', auth()->user()->id)->get();
+        $links = Link::query()->where('user_id', auth()->user()->id)->orderBy('order', 'asc')->get();
         return Inertia::render('Link/Index', [
             'links' => LinkItemResource::collection($links),
         ]);

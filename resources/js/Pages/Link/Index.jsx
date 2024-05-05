@@ -8,6 +8,8 @@ import Textarea from '@/Components/Textarea';
 import InputError from '@/Components/InputError';
 import { FaEye, FaEdit, FaTrash } from 'react-icons/fa';
 import { RiPencilLine, RiEyeLine } from 'react-icons/ri';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+
 const Index = ({ links }) => {
     const { auth } = usePage().props
     const [isFormVisible, setIsFormVisible] = useState(false);
@@ -69,6 +71,7 @@ const Index = ({ links }) => {
         })
     }
 
+    // Status change
     const handleStatusChange = (link) => {
         const newStatus = !link.is_active; // Toggle status
         router.put(route('links.update-status', link.id), {
@@ -80,6 +83,93 @@ const Index = ({ links }) => {
             }
         });
     }
+
+    // Link list
+    const [linkList, setLinkList] = useState(links.data);
+
+    useEffect(() => {
+        setLinkList(links.data);
+    }, [links.data]);
+
+    // Handle drag n drop
+    const [draggedItemIndex, setDraggedItemIndex] = useState(null);
+    const [droppedOverIndex, setDroppedOverIndex] = useState(null);
+
+
+    const handleDragStart = (e, index) => {
+        e.dataTransfer.setData("startIndex", index.toString());
+        setDraggedItemIndex(index);
+    };
+
+    const handleDragOver = (e, index) => {
+        e.preventDefault();
+        setDroppedOverIndex(index);
+    };
+
+
+    // const handleDragEnd = () => {
+    //     if (draggedItemIndex === null || droppedOverIndex === null) return;
+
+    //     const draggedIndex = parseInt(draggedItemIndex);
+    //     const droppedIndex = parseInt(droppedOverIndex);
+    //     if (draggedIndex === droppedIndex) return;
+
+    //     const newLinks = [...linkList];
+    //     const draggedLink = newLinks[draggedIndex];
+    //     newLinks.splice(draggedIndex, 1);
+    //     newLinks.splice(droppedIndex, 0, draggedLink);
+
+    //     setLinkList(newLinks);
+
+    //     // Reset draggedItemIndex and droppedOverIndex
+    //     setDraggedItemIndex(null);
+    //     setDroppedOverIndex(null);
+    // };
+
+    const handleDragEnd = () => {
+        if (draggedItemIndex === null || droppedOverIndex === null) return;
+
+        const draggedIndex = parseInt(draggedItemIndex);
+        const droppedIndex = parseInt(droppedOverIndex);
+        if (draggedIndex === droppedIndex) return;
+
+        const newLinks = [...linkList];
+        const draggedLink = newLinks[draggedIndex];
+
+        // Swap order
+        const tempOrder = draggedLink.order;
+        draggedLink.order = newLinks[droppedIndex].order;
+        newLinks[droppedIndex].order = tempOrder;
+
+        // Perbarui state dengan urutan yang baru
+        // setLinkList(newLinks);
+        // console.log(newLinks);
+        saveUpdatedLinksToDatabase(newLinks);
+
+        // Reset draggedItemIndex and droppedOverIndex
+        setDraggedItemIndex(null);
+        setDroppedOverIndex(null);
+    };
+
+
+    const saveUpdatedLinksToDatabase = (updatedLinks) => {
+        // Implementasikan fungsi untuk menyimpan perubahan urutan ke dalam database
+        // Anda dapat menggunakan metode seperti mengirim permintaan HTTP ke backend untuk memperbarui urutan dalam database
+
+        router.put(route('links.update-order', {
+            link: updatedLinks[0],
+            data: {
+                updatedLinks: updatedLinks[0],
+                targetUpdatedLinks: updatedLinks[1], // Mengirimkan hanya link yang terpengaruh oleh perubahan urutan
+            },
+        }), {
+            preserveScroll: true,
+            onSuccess: () => {
+                router.reload();
+            }
+        })
+    };
+
 
 
     return (
@@ -138,11 +228,18 @@ const Index = ({ links }) => {
                             <button type="button" className="bg-slate-700 w-full my-5 rounded-lg text-center py-5 text-white font-bold text-xl" onClick={handleAddLink}>Add Link</button>
                         </Transition>
 
+
                         {links.data.length > 0 ? (
                             <div className="grid grid-cols-12 gap-6">
                                 {links.data.map((link, index) => (
                                     <React.Fragment key={link.id}>
-                                        <div className="col-span-12 bg-gray-200 rounded-lg shadow-md p-6">
+                                        {/* Drag data start fro  */}
+                                        <div className="col-span-12 bg-gray-200 rounded-lg shadow-md p-6"
+                                            draggable="true"
+                                            onDragStart={(e) => handleDragStart(e, index)}
+                                            onDragOver={(e) => handleDragOver(e, index)}
+                                            onDragEnd={handleDragEnd}
+                                        >
                                             <div className="flex justify-between items-center">
                                                 <h1 className="text-xl font-semibold mb-2">{link.title}
                                                 </h1>
